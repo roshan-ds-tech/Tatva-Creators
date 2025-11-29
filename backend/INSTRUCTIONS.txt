@@ -1,0 +1,55 @@
+HOW TO CREATE THE SUPERUSER
+============================
+
+Option 1: Double-click CREATE_SUPERUSER.bat
+- This will run the script and show you the output
+
+Option 2: Run in Command Prompt
+1. Open Command Prompt
+2. Navigate to backend folder:
+   cd backend
+3. Activate virtual environment:
+   venv\Scripts\activate
+4. Run the script:
+   python create_superuser_simple.py
+
+Option 3: Use Django Shell
+1. Open Command Prompt
+2. Navigate to backend folder:
+   cd backend
+3. Activate virtual environment:
+   venv\Scripts\activate
+4. Open Django shell:
+   python manage.py shell
+5. Copy and paste this code:
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+username = 'RoshanDS'
+email = 'roshands@example.com'
+password = 'hackerone007'
+
+if User.objects.filter(username=username).exists():
+    User.objects.filter(username=username).delete()
+
+user = User.objects.create_superuser(
+    username=username,
+    email=email,
+    password=password,
+    first_name='Roshan',
+    last_name='DS'
+)
+print('SUCCESS! Superuser created.')
+print(f'Username: {username}')
+print(f'Password: {password}')
+exit()
+
+VERIFY IT WORKS:
+1. Start the server:
+   python manage.py runserver
+2. Go to: http://localhost:8000/admin
+3. Login with:
+   Username: RoshanDS
+   Password: hackerone007
+
+
