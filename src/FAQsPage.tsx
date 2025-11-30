@@ -13,8 +13,8 @@ function FAQsPage() {
       category: 'General',
       questions: [
         {
-          question: 'What is Calm Luxury Decor?',
-          answer: 'Calm Luxury Decor is a curated collection of handcrafted home decor items, including photo frames, idols, home interiors, and corporate gifts. We focus on sustainable materials, timeless design, and artisanal quality.'
+          question: 'What is TatvaCreators?',
+          answer: 'TatvaCreators is a curated collection of handcrafted home decor items, including photo frames, idols, home interiors, and corporate gifts. We focus on sustainable materials, timeless design, and artisanal quality.'
         },
         {
           question: 'Where are your products made?',
@@ -123,7 +123,7 @@ function FAQsPage() {
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-10 py-2 min-h-[64px] bg-background-light dark:bg-background-dark sticky top-0 z-50">
           <Link to="/" className="flex items-center gap-3 text-primary dark:text-brushed-gold">
             <div className="h-12 w-auto">
-              <img src="/output_tatva.png" alt="Calm Luxury Decor" className="h-full w-auto object-contain" />
+              <img src="/output_tatva.png" alt="TatvaCreators" className="h-full w-auto object-contain" />
             </div>
           </Link>
           <div className="hidden lg:flex flex-1 justify-end gap-8">
@@ -309,7 +309,7 @@ function FAQsPage() {
         <footer className="bg-background-light dark:bg-background-dark border-t border-primary/20 pt-16 pb-8 px-4 sm:px-10">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-1">
-              <h3 className="text-lg font-bold text-primary dark:text-gray-100">Calm Luxury Decor</h3>
+              <h3 className="text-lg font-bold text-primary dark:text-gray-100">TatvaCreators</h3>
               <p className="text-sm text-muted-charcoal dark:text-gray-400 mt-2">Mindfully crafted decor for inspired living.</p>
             </div>
             <div>
@@ -339,7 +339,7 @@ function FAQsPage() {
             </div>
           </div>
           <div className="mt-12 border-t border-primary/20 pt-8 flex flex-col sm:flex-row justify-between items-center text-sm text-muted-charcoal dark:text-gray-500">
-            <p>© 2024 Calm Luxury Decor. All Rights Reserved.</p>
+            <p>© 2024 TatvaCreators. All Rights Reserved.</p>
             <div className="flex space-x-4 mt-4 sm:mt-0">
               <a href="#">Terms of Service</a>
               <a href="#">Privacy Policy</a>

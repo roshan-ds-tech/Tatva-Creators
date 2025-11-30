@@ -36,8 +36,20 @@ function Homepage() {
     }
   }, [mobileMenuOpen])
   
+  // Helper function to normalize product price
+  const normalizeProduct = (product: any) => {
+    return {
+      ...product,
+      price: typeof product.price === 'string' ? parseFloat(product.price) : (typeof product.price === 'number' ? product.price : 0),
+      rating: typeof product.rating === 'string' ? parseFloat(product.rating) : (typeof product.rating === 'number' ? product.rating : 0),
+    }
+  }
+
   // Product data state - will refresh when localStorage changes
-  const [allProducts, setAllProducts] = useState(getAllProducts())
+  const [allProducts, setAllProducts] = useState(() => {
+    const products = getAllProducts()
+    return products.map(normalizeProduct)
+  })
   
   // Refresh products when localStorage changes (for admin-created products)
   useEffect(() => {
@@ -47,17 +59,23 @@ function Homepage() {
         try {
           const apiProducts = await getProductsFromAPI()
           if (apiProducts && apiProducts.length > 0) {
-            setAllProducts(apiProducts as any[])
+            // Normalize all products to ensure price and rating are numbers
+            const normalizedProducts = apiProducts.map(normalizeProduct)
+            setAllProducts(normalizedProducts as any[])
             return
           }
         } catch (error) {
           console.warn('Failed to fetch products from API, falling back to localStorage:', error)
         }
         // Fallback to localStorage
-        setAllProducts(getAllProducts())
+        const localProducts = getAllProducts()
+        const normalizedLocalProducts = localProducts.map(normalizeProduct)
+        setAllProducts(normalizedLocalProducts)
       } catch (error) {
         console.error('Error loading products:', error)
-        setAllProducts(getAllProducts())
+        const localProducts = getAllProducts()
+        const normalizedLocalProducts = localProducts.map(normalizeProduct)
+        setAllProducts(normalizedLocalProducts)
       }
     }
     
@@ -149,7 +167,12 @@ function Homepage() {
 
   // Get best seller products (top 4 products by rating, or all products if less than 4)
   const bestSellers = allProducts
-    .sort((a, b) => b.rating - a.rating)
+    .map(p => normalizeProduct(p))
+    .sort((a, b) => {
+      const ratingA = typeof a.rating === 'number' ? a.rating : (parseFloat(a.rating) || 0)
+      const ratingB = typeof b.rating === 'number' ? b.rating : (parseFloat(b.rating) || 0)
+      return ratingB - ratingA
+    })
     .slice(0, 4)
 
   return (
@@ -159,7 +182,7 @@ function Homepage() {
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-10 py-2 min-h-[64px] bg-background-light dark:bg-background-dark sticky top-0 z-50">
           <Link to="/" className="flex items-center gap-3 text-primary dark:text-brushed-gold">
             <div className="h-12 w-auto">
-              <img src="/output_tatva.png" alt="Calm Luxury Decor" className="h-full w-auto object-contain" />
+              <img src="/output_tatva.png" alt="TatvaCreators" className="h-full w-auto object-contain" />
             </div>
           </Link>
           <div className="hidden lg:flex flex-1 justify-end gap-8">
@@ -361,7 +384,7 @@ function Homepage() {
           >
             <div className="flex flex-col gap-6 items-center">
               <div className="h-24 w-auto">
-                <img src="/output_tatva.png" alt="Calm Luxury Decor" className="h-full w-auto object-contain" />
+                <img src="/output_tatva.png" alt="TatvaCreators" className="h-full w-auto object-contain" />
               </div>
               <div className="flex flex-col gap-4 max-w-3xl">
                 <h1 className="text-primary dark:text-primary text-4xl md:text-6xl font-serif font-bold leading-tight">Crafted With Purpose Designed To Inspire Your Space</h1>
@@ -478,7 +501,7 @@ function Homepage() {
                       <Link to={`/products/${product.id}`}>
                         <h3 className="text-base text-muted-charcoal dark:text-gray-300 hover:text-primary dark:hover:text-brushed-gold transition-colors">{product.name}</h3>
                       </Link>
-                      <p className="text-lg font-bold text-primary dark:text-brushed-gold mt-1">₹{product.price.toFixed(2)}</p>
+                      <p className="text-lg font-bold text-primary dark:text-brushed-gold mt-1">₹{typeof product.price === 'number' ? product.price.toFixed(2) : (parseFloat(product.price) || 0).toFixed(2)}</p>
                       <div className="flex justify-center items-center mt-1 gap-0.5 text-brushed-gold">
                         {Array.from({ length: fullStars }).map((_, i) => (
                           <span key={i} className="material-symbols-outlined !text-base" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
@@ -499,35 +522,30 @@ function Homepage() {
 
           {/* Why Choose Us */}
           <div className="bg-sage-grey/40 dark:bg-sage-grey/20 px-4 md:px-10 lg:px-20 py-12 md:py-20">
-            <h2 className="text-primary dark:text-gray-100 text-3xl font-serif font-bold text-center mb-10">Why Choose Calm Luxury?</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
-              <div className="text-center flex flex-col items-center">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 dark:bg-brushed-gold/20 text-primary dark:text-brushed-gold mb-4">
-                  <span className="material-symbols-outlined text-3xl">eco</span>
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-primary dark:text-gray-100 text-3xl font-serif font-bold text-center mb-10">Why Choose TatvaCreators?</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+                <div className="text-center flex flex-col items-center max-w-xs">
+                  <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 dark:bg-brushed-gold/20 text-primary dark:text-brushed-gold mb-4">
+                    <span className="material-symbols-outlined text-3xl">eco</span>
+                  </div>
+                  <h3 className="font-bold text-lg text-muted-charcoal dark:text-gray-200">Sustainable Materials</h3>
+                  <p className="text-sm text-muted-charcoal/80 dark:text-gray-400 mt-1 text-center">Responsibly sourced woods and recycled materials.</p>
                 </div>
-                <h3 className="font-bold text-lg text-muted-charcoal dark:text-gray-200">Sustainable Materials</h3>
-                <p className="text-sm text-muted-charcoal/80 dark:text-gray-400 mt-1">Responsibly sourced woods and recycled materials.</p>
-              </div>
-              <div className="text-center flex flex-col items-center">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 dark:bg-brushed-gold/20 text-primary dark:text-brushed-gold mb-4">
-                  <span className="material-symbols-outlined text-3xl">construction</span>
+                <div className="text-center flex flex-col items-center max-w-xs">
+                  <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 dark:bg-brushed-gold/20 text-primary dark:text-brushed-gold mb-4">
+                    <span className="material-symbols-outlined text-3xl">construction</span>
+                  </div>
+                  <h3 className="font-bold text-lg text-muted-charcoal dark:text-gray-200">Handcrafted Quality</h3>
+                  <p className="text-sm text-muted-charcoal/80 dark:text-gray-400 mt-1 text-center">Meticulously crafted by hand for a superior finish.</p>
                 </div>
-                <h3 className="font-bold text-lg text-muted-charcoal dark:text-gray-200">Handcrafted Quality</h3>
-                <p className="text-sm text-muted-charcoal/80 dark:text-gray-400 mt-1">Meticulously crafted by hand for a superior finish.</p>
-              </div>
-              <div className="text-center flex flex-col items-center">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 dark:bg-brushed-gold/20 text-primary dark:text-brushed-gold mb-4">
-                  <span className="material-symbols-outlined text-3xl">brush</span>
+                <div className="text-center flex flex-col items-center max-w-xs">
+                  <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 dark:bg-brushed-gold/20 text-primary dark:text-brushed-gold mb-4">
+                    <span className="material-symbols-outlined text-3xl">brush</span>
+                  </div>
+                  <h3 className="font-bold text-lg text-muted-charcoal dark:text-gray-200">Artisan Made</h3>
+                  <p className="text-sm text-muted-charcoal/80 dark:text-gray-400 mt-1 text-center">Supporting independent makers and their craft.</p>
                 </div>
-                <h3 className="font-bold text-lg text-muted-charcoal dark:text-gray-200">Artisan Made</h3>
-                <p className="text-sm text-muted-charcoal/80 dark:text-gray-400 mt-1">Supporting independent makers and their craft.</p>
-              </div>
-              <div className="text-center flex flex-col items-center">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 dark:bg-brushed-gold/20 text-primary dark:text-brushed-gold mb-4">
-                  <span className="material-symbols-outlined text-3xl">local_shipping</span>
-                </div>
-                <h3 className="font-bold text-lg text-muted-charcoal dark:text-gray-200">Free Shipping</h3>
-                <p className="text-sm text-muted-charcoal/80 dark:text-gray-400 mt-1">Enjoy complimentary shipping on orders over ₹100.</p>
               </div>
             </div>
           </div>
@@ -575,7 +593,7 @@ function Homepage() {
           {/* Social Grid */}
           <div className="px-4 md:px-10 lg:px-20 py-12 md:py-20 text-center">
             <h2 className="text-primary dark:text-gray-100 text-3xl font-serif font-bold">Follow Our Journey</h2>
-            <p className="text-muted-charcoal dark:text-gray-300 mt-2 mb-10">@CalmLuxuryDecor on Instagram</p>
+            <p className="text-muted-charcoal dark:text-gray-300 mt-2 mb-10">@TatvaCreators on Instagram</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
               <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden shadow-none hover:shadow-sm transition-shadow duration-300">
                 <img className="w-full h-full object-cover" data-alt="Aesthetic shot of a decor item in a home" src="/hero_art.png" alt="Aesthetic shot of a decor item in a home" />
@@ -597,7 +615,7 @@ function Homepage() {
         <footer className="bg-background-light dark:bg-background-dark border-t border-primary/20 pt-16 pb-8 px-4 sm:px-10">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-1">
-              <h3 className="text-lg font-bold text-primary dark:text-gray-100">Calm Luxury Decor</h3>
+              <h3 className="text-lg font-bold text-primary dark:text-gray-100">TatvaCreators</h3>
               <p className="text-sm text-muted-charcoal dark:text-gray-400 mt-2">Mindfully crafted decor for inspired living.</p>
             </div>
             <div>
@@ -627,7 +645,7 @@ function Homepage() {
             </div>
           </div>
           <div className="mt-12 border-t border-primary/20 pt-8 flex flex-col sm:flex-row justify-between items-center text-sm text-muted-charcoal dark:text-gray-500">
-            <p>© 2024 Calm Luxury Decor. All Rights Reserved.</p>
+            <p>© 2024 TatvaCreators. All Rights Reserved.</p>
             <div className="flex space-x-4 mt-4 sm:mt-0">
               <a href="#">Terms of Service</a>
               <a href="#">Privacy Policy</a>

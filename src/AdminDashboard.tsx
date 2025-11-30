@@ -229,7 +229,7 @@ function AdminDashboard() {
           <div className="text-center space-y-2">
             <div className="flex justify-center mb-4">
               <div className="h-16 w-auto">
-                <img src="/output_tatva.png" alt="Calm Luxury Decor" className="h-full w-auto object-contain" />
+                <img src="/output_tatva.png" alt="TatvaCreators" className="h-full w-auto object-contain" />
               </div>
             </div>
                   <h1 className="text-3xl font-serif font-bold text-primary dark:text-brushed-gold">Admin Login</h1>

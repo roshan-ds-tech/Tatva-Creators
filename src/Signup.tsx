@@ -151,7 +151,7 @@ function Signup() {
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-4 sm:px-10 py-2 min-h-[64px] bg-background-light dark:bg-background-dark sticky top-0 z-50">
           <Link to="/" className="flex items-center gap-3 text-primary dark:text-brushed-gold">
             <div className="h-12 w-auto">
-              <img src="/output_tatva.png" alt="Calm Luxury Decor" className="h-full w-auto object-contain" />
+              <img src="/output_tatva.png" alt="TatvaCreators" className="h-full w-auto object-contain" />
             </div>
           </Link>
           <div className="hidden lg:flex flex-1 justify-end gap-8">
